@@ -43,17 +43,26 @@ export default function AuthModal({ open, mode, onClose, onSwitchMode }) {
     function handleSubmit(e) {
         e.preventDefault()
         setError('')
+
+        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+
         if (isSignin) {
+            if (!form.email.trim()) return setError('Email is required.')
+            if (!emailValid) return setError('Please enter a valid email address.')
+            if (!form.password) return setError('Password is required.')
+
             const res = login(form.email, form.password)
             if (!res.ok) setError(res.error)
             else onClose()
         } else {
             if (!form.name.trim()) return setError('Name is required.')
             if (!form.email.trim()) return setError('Email is required.')
+            if (!emailValid) return setError('Please enter a valid email address.')
             if (form.password.length < 6) return setError('Password must be at least 6 characters.')
             if (form.role === 'doctor' && !form.specialty.trim()) {
                 return setError('Specialty is required for doctors.')
             }
+
             const res = register(form)
             if (!res.ok) setError(res.error)
             else onClose()
