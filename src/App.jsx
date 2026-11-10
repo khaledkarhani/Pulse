@@ -5,7 +5,7 @@ import About from './pages/About'
 import Features from './pages/Features'
 import Contact from './pages/Contact'
 import Studies from './pages/Studies'
-import StudyDetail from './pages/StudyDetail'
+import StudyDetails from './pages/StudyDetails'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
           <Route path="features" element={<Features />} />
           <Route path="contact" element={<Contact />} />
           <Route path="studies" element={<Studies />} />
-          <Route path="studies/:id" element={<StudyDetail />} />
+          <Route path="studies/:id" element={<StudyDetails />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
