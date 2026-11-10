@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const links = [
     { to: '/', label: 'Home', end: true },
@@ -21,8 +22,49 @@ function Logo() {
     )
 }
 
-export default function Navbar() {
+function UserMenu({ user, onLogout }) {
     const [open, setOpen] = useState(false)
+    const initial = user.name.charAt(0).toUpperCase()
+
+    return (
+        <div className="relative">
+            <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors"
+            >
+                <div className="w-7 h-7 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center text-accent text-sm font-bold">
+                    {initial}
+                </div>
+                <span className="text-sm">{user.name.split(' ')[0]}</span>
+            </button>
+
+            {open && (
+                <>
+                    <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-56 rounded-md border border-border bg-surface shadow-lg z-20 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-border">
+                            <p className="text-sm font-medium truncate">{user.name}</p>
+                            <p className="text-xs text-fg-dim truncate">{user.email}</p>
+                            <p className="font-mono text-[10px] uppercase tracking-widest text-accent mt-1">
+                                {user.role}{user.specialty ? ` · ${user.specialty}` : ''}
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => { onLogout(); setOpen(false) }}
+                            className="w-full text-left px-4 py-2 text-sm text-fg-muted hover:bg-surface-hover hover:text-fg transition-colors"
+                        >
+                            Sign out
+                        </button>
+                    </div>
+                </>
+            )}
+        </div>
+    )
+}
+
+export default function Navbar() {
+    const [menuOpen, setMenuOpen] = useState(false)
+    const { user, openAuthModal, logout } = useAuth()
 
     return (
         <header className="sticky top-0 z-40 backdrop-blur-md bg-bg/70 border-b border-border">
@@ -47,24 +89,31 @@ export default function Navbar() {
                 </ul>
 
                 <div className="hidden md:block">
-                    <button className="px-4 py-2 text-sm rounded-md border border-border hover:border-accent hover:text-accent transition-colors">
-                        Sign in
-                    </button>
+                    {user ? (
+                        <UserMenu user={user} onLogout={logout} />
+                    ) : (
+                        <button
+                            onClick={() => openAuthModal('signin')}
+                            className="px-4 py-2 text-sm rounded-md border border-border hover:border-accent hover:text-accent transition-colors"
+                        >
+                            Sign in
+                        </button>
+                    )}
                 </div>
 
                 <button
-                    onClick={() => setOpen(!open)}
+                    onClick={() => setMenuOpen(!menuOpen)}
                     className="md:hidden p-2 text-fg-muted hover:text-fg"
                     aria-label="Toggle menu"
-                    aria-expanded={open}
+                    aria-expanded={menuOpen}
                 >
                     <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        {open ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+                        {menuOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
                     </svg>
                 </button>
             </nav>
 
-            {open && (
+            {menuOpen && (
                 <div className="md:hidden border-t border-border">
                     <ul className="px-4 py-3 space-y-1">
                         {links.map((l) => (
@@ -72,7 +121,7 @@ export default function Navbar() {
                                 <NavLink
                                     to={l.to}
                                     end={l.end}
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => setMenuOpen(false)}
                                     className={({ isActive }) =>
                                         `block px-3 py-2 rounded-md text-sm ${isActive ? 'text-accent bg-surface' : 'text-fg-muted hover:text-fg hover:bg-surface'
                                         }`
@@ -83,9 +132,21 @@ export default function Navbar() {
                             </li>
                         ))}
                         <li>
-                            <button className="w-full mt-2 px-3 py-2 text-sm rounded-md border border-border text-left">
-                                Sign in
-                            </button>
+                            {user ? (
+                                <button
+                                    onClick={() => { logout(); setMenuOpen(false) }}
+                                    className="w-full mt-2 px-3 py-2 text-sm rounded-md border border-border text-left"
+                                >
+                                    Sign out ({user.name.split(' ')[0]})
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => { openAuthModal('signin'); setMenuOpen(false) }}
+                                    className="w-full mt-2 px-3 py-2 text-sm rounded-md border border-border text-left"
+                                >
+                                    Sign in
+                                </button>
+                            )}
                         </li>
                     </ul>
                 </div>
