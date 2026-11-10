@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { getFeaturedStudies } from '../pages/Studies'
+import { getFeaturedStudies } from '../data/studies'
 import StudyCard from '../components/StudyCard'
 
 const stats = [
