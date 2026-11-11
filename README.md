@@ -4,8 +4,8 @@
 
 Pulse is a submission for the **Web2 course project**. It implements the *Dr. Online* theme with a research-digest focus — doctors post, patients read, both discuss.
 
-**Live demo:** [pulse.vercel.app](https://pulse.vercel.app) *(update after deploy)*
-**Repository:** [github.com/YOUR-USERNAME/pulse](https://github.com/khaledkarhani/pulse) *(update)*
+**Live demo:** [pulse.vercel.app](https://pulse-gamma-flax.vercel.app/) 
+**Repository:** [github.com/YOUR-USERNAME/pulse](https://github.com/khaledkarhani/pulse) 
 
 ---
 
