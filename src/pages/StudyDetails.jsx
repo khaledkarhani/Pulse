@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { getStudyById } from '../data/studies'
-import { useAuth } from '../context/AuthContext'
+import Discussion from '../components/Discussion'
 
 function formatDate(iso) {
     return new Date(iso).toLocaleDateString('en-US', {
@@ -13,7 +13,6 @@ function formatDate(iso) {
 export default function StudyDetails() {
     const { id } = useParams()
     const study = getStudyById(id)
-    const { user, openAuthModal } = useAuth()
 
     if (!study) {
         return (
@@ -97,7 +96,7 @@ export default function StudyDetails() {
             </div>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-12">
+            <div className="flex flex-wrap gap-2">
                 {study.tags.map((t) => (
                     <span key={t} className="px-2 py-1 text-xs font-mono text-fg-muted border border-border rounded">
                         #{t}
@@ -105,45 +104,8 @@ export default function StudyDetails() {
                 ))}
             </div>
 
-            <div className="mt-16 pt-12 border-t border-border">
-                <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">Discussion</p>
-                <h2 className="text-2xl font-bold mb-4">Join the conversation</h2>
-                {user ? (
-                    <div className="p-6 rounded-xl border border-border bg-surface">
-                        <p className="text-sm text-fg-muted">
-                            Signed in as <span className="text-fg">{user.name}</span>. Discussion threads coming next step.
-                        </p>
-                    </div>
-                ) : (
-                    <>
-                        <p className="text-fg-muted mb-6">
-                            Ask questions, share experiences, or request clarification from doctors in this specialty.
-                        </p>
-                        <div className="p-8 rounded-xl border border-dashed border-border bg-surface/50 text-center">
-                            <p className="text-sm text-fg-muted mb-4">Sign in to join the discussion.</p>
-                            <button
-                                onClick={() => openAuthModal('signin')}
-                                className="px-5 py-2 rounded-md bg-accent text-bg text-sm font-medium hover:bg-accent-hover transition-colors"
-                            >
-                                Sign in to comment
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-            <div className="mt-16 pt-12 border-t border-border">
-                <p className="font-mono text-xs tracking-widest text-accent uppercase mb-3">Discussion</p>
-                <h2 className="text-2xl font-bold mb-4">Join the conversation</h2>
-                <p className="text-fg-muted mb-6">
-                    Ask questions, share experiences, or request clarification from doctors in this specialty.
-                </p>
-                <div className="p-8 rounded-xl border border-dashed border-border bg-surface/50 text-center">
-                    <p className="text-sm text-fg-muted mb-4">Sign in to join the discussion.</p>
-                    <button className="px-5 py-2 rounded-md bg-accent text-bg text-sm font-medium hover:bg-accent-hover transition-colors">
-                        Sign in to comment
-                    </button>
-                </div>
-            </div>
+            {/* Discussion */}
+            <Discussion studyId={study.id} />
         </article>
     )
 }
